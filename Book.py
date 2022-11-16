@@ -36,9 +36,9 @@ class BOOK():
                 t = i["updateTime"]
             else:
                 t = i["AddTime"]
-            T = self.c.load(str(i["volumeId"]), str(i["chapId"]))
+            T = self.c.load(str(i["volumeId"]), str(i["chapId"]))[0]
             if T != False:
-                if self.time(t) == T[0]:
+                if self.time(t) == T:
                     continue
             self.need.append(i)
         return self.need

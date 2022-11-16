@@ -50,11 +50,11 @@ class CONF():
         except configparser.NoSectionError as err:
             # print("键值缺失!")
             l.error("[CONF][ERROR]:\t\t" + str(err))
-            return False
+            return False, False
         except configparser.NoOptionError as err:
             # print("键值缺失!")
             l.error("[CONF][ERROR]:\t\t" + str(err))
-            return False
+            return False, False
 
     def load_time(self, sec):
         return self.CONF.get(sec, "time")
