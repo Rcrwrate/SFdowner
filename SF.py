@@ -1,7 +1,9 @@
 from Lib.ini import CONF
 from Lib.Network import Network
 from Lib.log import Log
+from Book import BOOK
 import traceback
+
 
 l = Log("SF", log_level=20)
 
@@ -11,7 +13,7 @@ URL = "https://minipapi.sfacg.com/"
 class SF():
     def __init__(self) -> None:
         self.c = CONF("SF")
-        self.s = Network({}, log_level=10)
+        self.s = Network({}, log_level=30)
         cookie = self.c.load("SF", "cookie")[0]
         self.changeHeader(cookie)
 
@@ -90,7 +92,42 @@ class SF():
         r = self.s.get(url).json()
         return r
 
+    def chapter_downloader(self, dl):
+
+        def BASE_download(dl):
+            print("开始下载,总计{}章".format(len(dl)))
+            o = []
+            err = []
+            for i in dl:
+                r = self.chapter(i["chapId"])
+                if r["status"]["httpCode"] != 200:
+                    print("[ERROR]:章节{}下载失败,将在稍后重试".format(i["title"]))
+                    l.error("[SF][DOWNL][ERROR]\t\t{r}\t\t{r.text}\n")
+                    err.append(i)
+                else:
+                    i["content"] = r["data"]["expand"]["content"]
+                    o.append(i)
+            return o, err
+
+        o, err = BASE_download(dl)
+        e = 0
+        while len(err) != 0:
+            tmp, err = BASE_download(err)
+            o += tmp
+            e += 1
+            if e >= 5:
+                break
+        return o
+
+    def download(self, noverID):
+        self.info(noverID)
+        self.b = BOOK(self.info["data"]["novelName"])
+        dl = self.b.analysis_need(self.b.analysis(self.dir(noverID)))
+        fin = self.chapter_downloader(dl)
+        self.b.set_cache(fin)
+
+
 
 if __name__ == "__main__":
     s = SF()
-    s.dir("466073")
+    s.download("466073")
