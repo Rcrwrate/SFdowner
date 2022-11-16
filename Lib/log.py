@@ -36,9 +36,18 @@ class Log():
 
     def debug(self, msg, **kwargs):
         self.LOG.debug(msg, **kwargs)
+    
+    def warn(self, msg, **kwargs):
+        self.LOG.warn(msg, **kwargs)
 
     def error(self, msg, **kwargs):
         self.LOG.error(msg, **kwargs)
+    
+    def critical(self, msg, **kwargs):
+        self.LOG.critical(msg, **kwargs)
 
     def __del__(self):
         self.LOG.removeHandler(self.F)
+
+    warning = warn
+    fatal = critical

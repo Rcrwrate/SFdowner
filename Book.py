@@ -8,17 +8,6 @@ class BOOK():
         self.c = CONF(name)
         self.l = []  # 文章顺序
         self.need = []
-    # def check(self, data):
-    #     '''True需要更新,False无需更新'''
-    #     if data["status"]["httpCode"] == 403:
-    #         self.forbidden.append(data["data"]["chapId"])
-    #         return False
-    #     T = self.c.load(data["data"]["chapId"])[0]
-    #     if T:
-    #         if self.time(data["data"]["updateTime"]) == T:
-    #             return False
-    #     self.need.append(data)
-    #     return True
 
     def analysis(self, o):
         '''分析可下载章节'''

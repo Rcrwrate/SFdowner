@@ -4,7 +4,7 @@ import configparser
 from .log import Log
 import traceback
 
-l = Log("Conf")
+l = Log("Conf",log_level=30)
 
 
 class CONF():
@@ -41,7 +41,7 @@ class CONF():
             self.CONF.remove_option(sec, key)
         except configparser.NoSectionError as err:
             # print("键值缺失!")
-            l.error("[CONF][ERROR]:\t\t" + str(err))
+            l.warning("[CONF][WARN]:\t\t" + str(err))
             return False
 
     def load(self, sec, key):
@@ -49,11 +49,11 @@ class CONF():
             return self.CONF.get(sec, key), self.load_time(sec)
         except configparser.NoSectionError as err:
             # print("键值缺失!")
-            l.error("[CONF][ERROR]:\t\t" + str(err))
+            l.warning("[CONF][WARN]:\t\t" + str(err))
             return False, False
         except configparser.NoOptionError as err:
             # print("键值缺失!")
-            l.error("[CONF][ERROR]:\t\t" + str(err))
+            l.warning("[CONF][WARN]:\t\t" + str(err))
             return False, False
 
     def load_time(self, sec):
