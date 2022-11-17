@@ -98,6 +98,34 @@ class Network():
             pass
         return r
 
+    def put(self, url, data=False, json={}, headers=False, noDefaultHeader=False, changeDefaultHeader=False, verify=False, **kwargs):
+        h = Header.headerchange(headers, noDefaultHeader, changeDefaultHeader)
+        domain = url.split("/")[2]
+        conf = get_qs(self.table, domain)
+        if conf != False:
+            ip = get_qs(conf, "ip")
+            if ip:
+                url = url.replace(domain, ip)
+                h["host"] = domain
+        try:
+            if data == False:
+                r = self.s.put(url, json=json, headers=h,
+                                verify=False, **kwargs)
+                data = json
+            else:
+                r = self.s.put(url, data=data, headers=h,
+                                verify=False, **kwargs)
+        except Exception as e:
+            self.LOG.error(f"[POST][ERROR]\t\t{url}\t{domain}\t{e.args}")
+            raise Exception(e.args)
+        self.LOG.info(f"[POST][INFO]\t\t{r.status_code}\t{r.url}\t{domain}")
+        try:
+            self.LOG.debug(
+                f"[POST][DEBUG]\t\t{h}\n"+"\t"*11 + f"{r.headers}\n" + "\t"*11 + f"{data}\n" + "\t"*11 + f"{r.text}")
+        except Exception:
+            pass
+        return r
+
     def changeHeader(self, header, noDefaultHeader=False):
         return Header.headerchange(header, noDefaultHeader, changeDefaultHeader=True)
 
